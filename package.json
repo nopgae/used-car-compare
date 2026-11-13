@@ -1,0 +1,18 @@
+{
+  "name": "used-car-compare",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:up": "docker compose up -d",
+    "ingest": "node --env-file=.env scripts/ingest.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "mysql2": "^3.24.6"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2",
+    "vitest": "^5.1.0"
+  }
+}

@@ -1,0 +1,72 @@
+import { describe, expect, it } from "vitest";
+import { modelKey, normalizeMaker, parsePrice, toRow } from "./onbid.ts";
+
+// 2026-10 실제 응답에서 가져온 한 건(필드 일부)
+const sample = {
+  cltrMngNo: "2026-1100-057000",
+  pbctCdtnNo: 6249000,
+  onbidCltrNm: "기아자동차 대형 승용 카니발 2,199cc - 66소2",
+  cltrUsgSclsCtgrNm: "승용차",
+  prptDivNm: "불용품",
+  apslEvlAmt: null,
+  lowstBidPrcIndctCont: "비공개",
+  cltrOpbdDt: "202610281100",
+  pbctStatCd: "0010",
+  pbctStatNm: "낙찰",
+  scfbAmt: "6670000",
+  vldBddrNope: 12,
+  drvDstc: 65426,
+  cltrMkrNm: null,
+  carMdlNm: " 카니발",
+  yrmdl: "2015",
+  fuelCont: null,
+  dsvlm: 2199,
+  pbctNsq: "1",
+};
+
+describe("toRow", () => {
+  it("실제 응답 한 건을 행으로 바꾼다", () => {
+    expect(toRow(sample, 2026)).toMatchObject({
+      maker: "기아",
+      model: "카니발",
+      model_key: "카니발",
+      year: 2015,
+      mileage_km: 65426,
+      price_won: 6670000,
+      min_bid_won: null,
+      opened_at: "2026-10-28 11:00:00",
+    });
+  });
+
+  it("차가 아닌 장비와 날짜가 없는 행은 버린다", () => {
+    expect(toRow({ ...sample, cltrUsgSclsCtgrNm: "지게차" })).toBeNull();
+    expect(toRow({ ...sample, cltrOpbdDt: null })).toBeNull();
+  });
+
+  it("말이 안 되는 연식과 주행거리 0은 비운다", () => {
+    expect(toRow({ ...sample, yrmdl: "2099", drvDstc: 0 }, 2026)).toMatchObject({ year: null, mileage_km: null });
+    expect(toRow({ ...sample, drvDstc: 9_999_999_999, dsvlm: 24979, fuelCont: "-" })).toMatchObject({
+      mileage_km: null, displacement_cc: null, fuel: null,
+    });
+  });
+});
+
+describe("helpers", () => {
+  it("제조사 표기를 합친다", () => {
+    expect(normalizeMaker(null, "쉐보레(GM대우) 경차 마티즈")).toBe("쉐보레(GM대우)");
+    expect(normalizeMaker("현대자동차")).toBe("현대");
+    expect(normalizeMaker("에이엠특장")).toBeNull();
+  });
+
+  it("모델 키에서 공백과 엔진 사양을 뺀다", () => {
+    expect(modelKey("스파크 1.0 DOHC")).toBe("스파크");
+    expect(modelKey("그랜드 스타렉스")).toBe(modelKey("그랜드스타렉스"));
+    expect(modelKey("K5 하이브리드")).toBe("K5하이브리드");
+  });
+
+  it("여러 건이 이어진 낙찰가는 버린다", () => {
+    expect(parsePrice("5790000")).toBe(5790000);
+    expect(parsePrice("100|200")).toBeNull();
+    expect(parsePrice(null)).toBeNull();
+  });
+});

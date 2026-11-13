@@ -15,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Link href="/" className="brand">공공기관 중고차 공매 시세</Link>
           <nav>
             <Link href="/">🇰🇷 한국 (온비드)</Link>
+            <Link href="/estimate">시세 추정</Link>
             <Link href="/us">🇺🇸 미국 (개발 예정)</Link>
           </nav>
         </header>

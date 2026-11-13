@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { modelKey, normalizeMaker, parsePrice, toRow } from "./onbid.ts";
+import { isSpecial, modelGroup, modelKey, normalizeMaker, parsePrice, toRow } from "./onbid.ts";
 
 // 2026-10 실제 응답에서 가져온 한 건(필드 일부)
 const sample = {
@@ -68,5 +68,35 @@ describe("helpers", () => {
     expect(parsePrice("5790000")).toBe(5790000);
     expect(parsePrice("100|200")).toBeNull();
     expect(parsePrice(null)).toBeNull();
+  });
+});
+
+describe("modelGroup / isSpecial", () => {
+  it("표기·세대가 달라도 같은 계열로 묶는다", () => {
+    expect(modelGroup("올뉴카니발")).toBe("카니발");
+    expect(modelGroup("그랜드 카니발")).toBe("카니발");
+    expect(modelGroup("포터Ⅱ(PORTERⅡ)")).toBe("포터");
+    expect(modelGroup("NF소나타")).toBe("쏘나타");
+    expect(modelGroup("그랜드스타렉스")).toBe("그랜드스타렉스");
+    expect(modelGroup("스타렉스(STAREX)")).toBe("스타렉스");
+    expect(modelGroup("렉스턴스포츠 칸")).toBe("렉스턴스포츠");
+    expect(modelGroup("제네시스 G80")).toBe("G80");
+    expect(modelGroup("BS090", "대우 중형승합 BS090")).toBeNull();
+    expect(modelGroup("그레이스 터보 15인승")).toBe("그레이스");
+    expect(modelGroup("레이전기차")).toBe("레이 전기");
+    expect(modelGroup("SM3 Z.E.")).toBe("SM3 전기");
+    expect(modelGroup("K5 하이브리드")).toBe("K5 하이브리드");
+    expect(modelGroup("카니발 하이리무진")).toBe("카니발 리무진");
+  });
+
+  it("모델명에 계열이 없으면 물건명에서 찾는다", () => {
+    expect(modelGroup(null, "기아자동차 대형 승용 카니발 2,199cc")).toBe("카니발");
+  });
+
+  it("특수 개조·용도 차량을 가려낸다", () => {
+    expect(isSpecial("승합차", "오텍그랜드스타렉스장애인차")).toBe(true);
+    expect(isSpecial("승용차", "아반떼 순찰차")).toBe(true);
+    expect(isSpecial("특수자동차", "마이티")).toBe(true);
+    expect(isSpecial("승용차", "카니발", "기아자동차 대형 승용 카니발 2,199cc")).toBe(false);
   });
 });

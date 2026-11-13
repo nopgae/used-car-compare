@@ -41,3 +41,6 @@ tbody tr:nth-child(even) { background: var(--row); }
 .compare th[scope="row"] { color: var(--muted); font-weight: 500; width: 180px; }
 .compare td { vertical-align: top; min-width: 200px; }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+.estimate { margin: 16px 0; padding: 12px 16px; border: 1px solid var(--line); border-radius: 8px; }
+.estimate .big { font-size: 22px; margin: 0 0 4px; }
+.estimate h2, .method h2 { font-size: 17px; margin-top: 20px; }

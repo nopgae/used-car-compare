@@ -33,7 +33,7 @@ async function fetchPage(from: string, to: string, page: number): Promise<{ tota
 }
 
 const COLS: (keyof BidRow)[] = [
-  "cltr_mng_no", "pbct_cdtn_no", "name", "category", "maker", "model", "model_key", "year", "mileage_km",
+  "cltr_mng_no", "pbct_cdtn_no", "name", "category", "maker", "model", "model_key", "model_group", "is_special", "year", "mileage_km",
   "displacement_cc", "fuel", "property_type", "appraisal_won", "min_bid_won", "price_won", "status_cd",
   "status", "round_no", "bidders", "opened_at",
 ];

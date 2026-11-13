@@ -6,7 +6,9 @@ CREATE TABLE IF NOT EXISTS bids (
   category        VARCHAR(100) NULL,                 -- 용도 소분류(승용차, 승합차 ...)
   maker           VARCHAR(50)  NULL,
   model           VARCHAR(300) NULL,                 -- 원문 모델명(공백 정리)
-  model_key       VARCHAR(300) NULL,                 -- 비교·추정용 정규화 키
+  model_key       VARCHAR(300) NULL,                 -- 공백·엔진 표기를 뺀 모델명
+  model_group     VARCHAR(50)  NULL,                 -- 모델 계열(카니발, 올뉴카니발 → 카니발)
+  is_special      BOOLEAN      NOT NULL DEFAULT FALSE, -- 구급·소방·순찰 등 특수 개조·용도 차량
   year            SMALLINT     NULL,
   mileage_km      INT          NULL,
   displacement_cc INT          NULL,
@@ -23,5 +25,6 @@ CREATE TABLE IF NOT EXISTS bids (
   PRIMARY KEY (cltr_mng_no, pbct_cdtn_no),
   KEY idx_status_opened (status_cd, opened_at),
   KEY idx_model_year (model_key, year),
-  KEY idx_maker (maker)
+  KEY idx_maker (maker),
+  KEY idx_group_year (model_group, year)
 );

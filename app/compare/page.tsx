@@ -7,18 +7,20 @@ import type { SearchParams } from "../../lib/search";
 
 type Bid = RowDataPacket & {
   cltr_mng_no: string; pbct_cdtn_no: number; name: string; category: string | null; maker: string | null;
-  model: string | null; model_key: string | null; year: number | null; mileage_km: number | null;
-  displacement_cc: number | null; fuel: string | null; property_type: string | null; appraisal_won: number | null;
-  min_bid_won: number | null; price_won: number | null; bidders: number | null; round_no: string | null; opened_at: string;
+  model: string | null; model_key: string | null; model_group: string | null; is_special: number; year: number | null;
+  mileage_km: number | null; displacement_cc: number | null; fuel: string | null; property_type: string | null;
+  appraisal_won: number | null; min_bid_won: number | null; price_won: number | null; bidders: number | null;
+  round_no: string | null; opened_at: string;
 };
 
-// 같은 모델 키, 연식 ±1년 낙찰가로 "비슷한 차" 기준을 잡는다.
+// "비슷한 차": 같은 모델 계열(없으면 같은 모델명)·같은 일반/특수 구분, 연식 ±1년의 낙찰가
 async function peers(b: Bid) {
-  if (!b.model_key || b.year == null) return null;
+  if (b.year == null || (!b.model_group && !b.model_key)) return null;
+  const [col, val] = b.model_group ? ["model_group", b.model_group] : ["model_key", b.model_key];
   const [rows] = await db.query<(RowDataPacket & { price_won: number })[]>(
     `SELECT price_won FROM bids WHERE status_cd='0010' AND price_won IS NOT NULL
-       AND model_key = ? AND year BETWEEN ? AND ?`,
-    [b.model_key, b.year - 1, b.year + 1],
+       AND ${col} = ? AND is_special = ? AND year BETWEEN ? AND ?`,
+    [val, b.is_special, b.year - 1, b.year + 1],
   );
   return { n: rows.length, median: median(rows.map((r) => Number(r.price_won))) };
 }
@@ -50,6 +52,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     ["물건명", (c) => c.name],
     ["제조사", (c) => c.maker ?? "-"],
     ["모델", (c) => c.model ?? "-"],
+    ["모델 계열", (c) => (c.model_group ?? "-") + (c.is_special ? " · 특수 개조/용도" : "")],
     ["차종", (c) => c.category ?? "-"],
     ["연식", (c) => c.year ?? "-"],
     ["주행거리", (c) => km(c.mileage_km)],
@@ -63,8 +66,8 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
     ["유효 입찰자", (c) => c.bidders ?? "-"],
     ["공매 회차", (c) => c.round_no ?? "-"],
     ["개찰일", (c) => c.opened_at.slice(0, 16)],
-    ["같은 모델·연식±1 낙찰 중앙값", (_, i) => (stats[i] && stats[i].median != null ? `${won(stats[i].median)} (${stats[i].n}건)` : "-")],
-    ["중앙값 대비", (c, i) => pct(c.price_won, stats[i]?.median ?? null)],
+    ["비슷한 차 낙찰 중앙값", (_, i) => (stats[i] && stats[i].median != null ? `${won(stats[i].median)} (${stats[i].n}건)` : "-")],
+    ["중앙값 대비", (c, i) => (stats[i] && stats[i].n < 5 ? `${pct(c.price_won, stats[i].median)} (표본 적음)` : pct(c.price_won, stats[i]?.median ?? null))],
   ];
 
   return (
@@ -85,7 +88,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
         </table>
       </div>
       <p className="summary">
-        “같은 모델”은 모델명에서 공백·엔진 표기를 뺀 키가 같은 낙찰 건입니다(예: 카니발과 올뉴카니발은 다른 모델로 셉니다).
+        “비슷한 차”는 같은 모델 계열(예: 카니발·올뉴카니발·카니발 리무진 → 카니발, 전기·하이브리드는 따로), 같은 일반/특수 구분, 연식 ±1년인 낙찰 건입니다.
       </p>
       <p><Link href="/">← 검색으로</Link></p>
     </>

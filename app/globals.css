@@ -44,3 +44,23 @@ tbody tr:nth-child(even) { background: var(--row); }
 .estimate { margin: 16px 0; padding: 12px 16px; border: 1px solid var(--line); border-radius: 8px; }
 .estimate .big { font-size: 22px; margin: 0 0 4px; }
 .estimate h2, .method h2 { font-size: 17px; margin-top: 20px; }
+/* 차트: 계열색은 표시에만, 글자는 텍스트 색(dataviz 기본 팔레트 slot 1) */
+:root { --series-1: #2a78d6; }
+@media (prefers-color-scheme: dark) { :root { --series-1: #3987e5; } }
+.chart { margin: 24px 0 4px; }
+.chart figcaption { font-weight: 600; margin-bottom: 4px; }
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .tick { fill: var(--muted); font-size: 12px; }
+.chart .line { fill: none; stroke: var(--series-1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.chart .dot { fill: var(--series-1); stroke: var(--bg); stroke-width: 2; }
+.chart .hit rect { fill: transparent; }
+.chart .hit .cross, .chart .hit .dot { visibility: hidden; }
+.chart .hit .cross { stroke: var(--muted); stroke-width: 1; }
+.chart .hit:hover .cross, .chart .hit:hover .dot { visibility: visible; }
+.chart details { margin-top: 4px; font-size: 13px; color: var(--muted); }
+.chart .tick { font-size: 13px; }
+/* SVG는 화면 폭에 맞춰 줄어드므로, 좁은 화면에서는 viewBox 기준 글자를 키워 실제 약 10px로 보이게 한다 */
+@media (max-width: 600px) { .chart .tick { font-size: 22px; } }
+.top nav { flex-wrap: wrap; gap: 4px 16px; }
+.top nav a { white-space: nowrap; }

@@ -28,3 +28,11 @@ CREATE TABLE IF NOT EXISTS bids (
   KEY idx_maker (maker),
   KEY idx_group_year (model_group, year)
 );
+
+-- 월별 통계 (한국교통안전공단 자동차 성능점검 건수 등)
+CREATE TABLE IF NOT EXISTS monthly_stats (
+  metric VARCHAR(40) NOT NULL,
+  ym     CHAR(7)     NOT NULL,  -- YYYY-MM
+  value  BIGINT      NOT NULL,
+  PRIMARY KEY (metric, ym)
+);

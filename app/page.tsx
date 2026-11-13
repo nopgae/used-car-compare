@@ -34,7 +34,8 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <>
-      <h1>차량 공매 낙찰 검색</h1>
+      <h1>온비드 차량 공매 낙찰 검색</h1>
+      <p className="summary">공공기관이 쓰다 처분한 차(불용품, 낙찰의 약 86%)와 압류·국공유 재산 차량의 공매 결과입니다. 법원 경매는 포함하지 않습니다.</p>
       <form className="filters" method="get">
         <label>제조사
           <select name="maker" defaultValue={f.maker}>
@@ -64,11 +65,16 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
         <button type="submit">검색</button>
       </form>
 
-      <p className="summary">낙찰 {total.toLocaleString()}건 · {q.page}/{pages}쪽</p>
+      <form action="/compare" method="get">
+      <div className="result-bar">
+        <p className="summary">낙찰 {total.toLocaleString()}건 · {q.page}/{pages}쪽</p>
+        <button type="submit" className="secondary">선택한 차량 비교 (최대 3대)</button>
+      </div>
       <div className="table-wrap">
         <table>
           <thead>
             <tr>
+              <th><span className="sr-only">비교 선택</span></th>
               <th>개찰일</th><th>물건명</th><th>제조사</th><th>모델</th><th>차종</th>
               <th className="num">연식</th><th className="num">주행거리</th><th className="num">감정가</th>
               <th className="num">낙찰가</th><th className="num">감정가 대비</th><th className="num">입찰자</th>
@@ -77,6 +83,9 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
           <tbody>
             {rows.map((r) => (
               <tr key={`${r.cltr_mng_no}-${r.pbct_cdtn_no}`}>
+                <td>
+                  <input type="checkbox" name="id" value={`${r.cltr_mng_no}~${r.pbct_cdtn_no}`} aria-label={`${r.name} 비교에 추가`} />
+                </td>
                 <td>{r.opened_at.slice(0, 10)}</td>
                 <td className="name">{r.name}</td>
                 <td>{r.maker ?? "-"}</td>
@@ -90,10 +99,11 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
                 <td className="num">{r.bidders ?? "-"}</td>
               </tr>
             ))}
-            {rows.length === 0 && <tr><td colSpan={11}>조건에 맞는 낙찰 건이 없습니다.</td></tr>}
+            {rows.length === 0 && <tr><td colSpan={12}>조건에 맞는 낙찰 건이 없습니다.</td></tr>}
           </tbody>
         </table>
       </div>
+      </form>
       <nav className="pager" aria-label="페이지">
         {q.page > 1 && <Link href={pageHref(q.page - 1)}>← 이전</Link>}
         {q.page < pages && <Link href={pageHref(q.page + 1)}>다음 →</Link>}

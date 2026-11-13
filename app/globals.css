@@ -36,3 +36,8 @@ td.name { white-space: normal; min-width: 220px; }
 td.num, th.num { text-align: right; }
 tbody tr:nth-child(even) { background: var(--row); }
 .pager { display: flex; gap: 12px; justify-content: center; margin: 16px 0; }
+.result-bar { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.secondary { font: inherit; padding: 6px 12px; border: 1px solid var(--accent); border-radius: 6px; background: transparent; color: var(--accent); cursor: pointer; }
+.compare th[scope="row"] { color: var(--muted); font-weight: 500; width: 180px; }
+.compare td { vertical-align: top; min-width: 200px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }

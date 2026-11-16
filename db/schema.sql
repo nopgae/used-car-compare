@@ -36,3 +36,49 @@ CREATE TABLE IF NOT EXISTS monthly_stats (
   value  BIGINT      NOT NULL,
   PRIMARY KEY (metric, ym)
 );
+
+-- 진행 중 차량 공매 스냅샷(getCarCltrList2)과 처음 본 시점의 예상 낙찰가.
+-- 예측(predicted_*)은 처음 저장한 값을 다시 덮어쓰지 않는다: 마감 전에 한 예측임을 보장하기 위해.
+CREATE TABLE IF NOT EXISTS listings (
+  cltr_mng_no     VARCHAR(80)  NOT NULL,
+  pbct_cdtn_no    BIGINT       NOT NULL,
+  name            VARCHAR(300) NOT NULL,
+  category        VARCHAR(100) NULL,
+  car_type        VARCHAR(50)  NULL,                 -- 차종(소형차, 중형차 ...)
+  maker           VARCHAR(50)  NULL,
+  model           VARCHAR(300) NULL,
+  model_group     VARCHAR(50)  NULL,
+  is_special      BOOLEAN      NOT NULL DEFAULT FALSE,
+  year            SMALLINT     NULL,
+  mileage_km      INT          NULL,
+  fuel            VARCHAR(100) NULL,
+  color           VARCHAR(50)  NULL,
+  region          VARCHAR(50)  NULL,                 -- 소재지 시도
+  org             VARCHAR(200) NULL,                 -- 공고기관
+  property_type   VARCHAR(50)  NULL,
+  appraisal_won   BIGINT       NULL,
+  min_bid_won     BIGINT       NULL,
+  failed_rounds   INT          NULL,                 -- 유찰 횟수
+  bid_start_at    DATETIME     NULL,
+  bid_end_at      DATETIME     NULL,
+  first_seen_at   DATETIME     NOT NULL,
+  last_seen_at    DATETIME     NOT NULL,
+  predicted_won   BIGINT       NULL,
+  predicted_low   BIGINT       NULL,
+  predicted_high  BIGINT       NULL,
+  predicted_n     INT          NULL,                 -- 예측에 쓴 학습 건수
+  predicted_at    DATETIME     NULL,
+  PRIMARY KEY (cltr_mng_no, pbct_cdtn_no),
+  KEY idx_end (bid_end_at)
+);
+
+-- 수집 작업 이력
+CREATE TABLE IF NOT EXISTS ingest_runs (
+  id          BIGINT AUTO_INCREMENT PRIMARY KEY,
+  job         VARCHAR(40)  NOT NULL,
+  started_at  DATETIME     NOT NULL,
+  finished_at DATETIME     NOT NULL,
+  api_calls   INT          NOT NULL,
+  row_count   INT          NOT NULL,
+  error       VARCHAR(500) NULL
+);

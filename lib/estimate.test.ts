@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { baseline, features, fit, predict, solve, type Sale } from "./estimate.ts";
+import { baseline, features, fit, LOT_OR_SCRAP, predict, solve, type Sale } from "./estimate.ts";
 
 describe("solve", () => {
   it("정확히 맞는 선형식을 복원한다", () => {
@@ -41,5 +41,16 @@ describe("baseline", () => {
     const s = (year: number, price: number): Sale => ({ year, price, km: 1, soldAt: new Date() });
     expect(baseline([s(2010, 100), s(2012, 200), s(2015, 999)], 2011)).toBe(150);
     expect(baseline([s(2000, 100)], 2011)).toBeNull();
+  });
+});
+
+describe("LOT_OR_SCRAP", () => {
+  it("여러 대 묶음·폐차 조건 매각을 가려낸다", () => {
+    for (const name of [
+      "기아자동차 중형 승용 카렌스 1,998cc 외 31대", "을로운수/5대/광주77바3508", "아반떼,쏘나타(아반떼 3대, 소나타 15대 총18대)",
+      "현대자동차 소나타 YF 등 84대 불용 공용차량", "경찰작전버스 3,907cc 2대 일괄매각", "[폐차조건부 매각] 스파크 EV",
+    ]) expect(LOT_OR_SCRAP.test(name), name).toBe(true);
+    for (const name of ["기아자동차 대형 승용 카니발 2,199cc", "봉고Ⅲ 1톤", "현대 중형차 그랜드스타렉스 2497cc", "에이엠5톤 압축식진개차"])
+      expect(LOT_OR_SCRAP.test(name), name).toBe(false);
   });
 });

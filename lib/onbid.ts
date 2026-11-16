@@ -29,7 +29,7 @@ export type BidRow = {
 
 // shortcut: 차가 아닌 장비를 소분류명으로만 거른다. 새 소분류가 나오면 목록에 추가.
 const NON_VEHICLE = new Set([
-  "지게차", "자전거", "오토바이", "기타중기", "굴삭기", "ATV(4륜오토바이)", "자동차부품및보조용품", "자전거부품및보조용품",
+  "지게차", "자전거", "오토바이", "기타중기", "굴삭기", "ATV(4륜오토바이)", "자동차부품및보조용품", "자전거부품및보조용품", "오토바이부품및보조용품",
 ]);
 
 // shortcut: 표기 흔들림만 합친다. 브랜드가 늘면 여기에 추가.
@@ -177,5 +177,53 @@ export function toRow(it: OnbidItem, thisYear = new Date().getFullYear()): BidRo
     round_no: text(it.pbctNsq),
     bidders: int(it.vldBddrNope),
     opened_at: `${opened.slice(0, 4)}-${opened.slice(4, 6)}-${opened.slice(6, 8)} ${opened.slice(8, 10)}:${opened.slice(10, 12)}:00`,
+  };
+}
+
+// 진행 중 차량 공매(getCarCltrList2) 한 건. 결과 API와 같은 키(물건관리번호+공매조건번호)를 쓴다.
+export type ListingRow = {
+  cltr_mng_no: string; pbct_cdtn_no: number; name: string; category: string | null; car_type: string | null;
+  maker: string | null; model: string | null; model_group: string | null; is_special: boolean; year: number | null;
+  mileage_km: number | null; fuel: string | null; color: string | null; region: string | null; org: string | null;
+  property_type: string | null; appraisal_won: number | null; min_bid_won: number | null; failed_rounds: number | null;
+  bid_start_at: string | null; bid_end_at: string | null;
+};
+
+const dt = (v: unknown) => {
+  const s = text(v);
+  return s && /^\d{12}$/.test(s) ? `${s.slice(0, 4)}-${s.slice(4, 6)}-${s.slice(6, 8)} ${s.slice(8, 10)}:${s.slice(10, 12)}:00` : null;
+};
+
+export function toListing(it: OnbidItem, thisYear = new Date().getFullYear()): ListingRow | null {
+  const category = text(it.cltrUsgSclsCtgrNm);
+  if (category && NON_VEHICLE.has(category)) return null;
+  const cltr = text(it.cltrMngNo);
+  if (!cltr || it.pbctCdtnNo == null) return null;
+  const name = text(it.onbidCltrNm) ?? "";
+  const model = text(it.carMdlNm);
+  const year = int(it.yrmdl);
+  const fuel = text(it.fuelCont);
+  return {
+    cltr_mng_no: cltr,
+    pbct_cdtn_no: Number(it.pbctCdtnNo),
+    name,
+    category,
+    car_type: text(it.carVhknNm),
+    maker: normalizeMaker(text(it.cltrMkrNm), name, model),
+    model,
+    model_group: modelGroup(model, name),
+    is_special: isSpecial(category, model, name),
+    year: year !== null && year >= 1970 && year <= thisYear + 1 ? year : null,
+    mileage_km: inRange(int(it.drvDstc), 1, 2_000_000),
+    fuel: fuel && /[가-힣A-Za-z]{2,}/.test(fuel) ? fuel : null,
+    color: text(it.carColrNm),
+    region: text(it.lctnSdnm),
+    org: text(it.orgNm),
+    property_type: text(it.prptDivNm),
+    appraisal_won: int(it.apslEvlAmt) || null,
+    min_bid_won: int(it.lowstBidPrcIndctCont) || null,
+    failed_rounds: int(it.usbdNft),
+    bid_start_at: dt(it.cltrBidBgngDt),
+    bid_end_at: dt(it.cltrBidEndDt),
   };
 }

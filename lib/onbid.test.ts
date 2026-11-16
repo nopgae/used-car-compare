@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { isSpecial, modelGroup, modelKey, normalizeMaker, parsePrice, toRow } from "./onbid.ts";
+import { isSpecial, modelGroup, modelKey, normalizeMaker, parsePrice, toListing, toRow } from "./onbid.ts";
 
 // 2026-10 실제 응답에서 가져온 한 건(필드 일부)
 const sample = {
@@ -98,5 +98,20 @@ describe("modelGroup / isSpecial", () => {
     expect(isSpecial("승용차", "아반떼 순찰차")).toBe(true);
     expect(isSpecial("특수자동차", "마이티")).toBe(true);
     expect(isSpecial("승용차", "카니발", "기아자동차 대형 승용 카니발 2,199cc")).toBe(false);
+  });
+});
+
+describe("toListing", () => {
+  it("진행 중 공매 한 건(2026-11 실제 응답 일부)을 행으로", () => {
+    const row = toListing({
+      cltrMngNo: "2026-1100-060474", pbctCdtnNo: 6270672, onbidCltrNm: "엑센트, 현대자동차", cltrUsgSclsCtgrNm: "승용차",
+      prptDivNm: "불용품", cltrBidBgngDt: "202611060900", cltrBidEndDt: "202611121800", apslEvlAmt: 1000000,
+      lowstBidPrcIndctCont: "1000000", lctnSdnm: "전북특별자치도", orgNm: "장수군청", cltrMkrNm: "현대", carVhknNm: "소형차",
+      carMdlNm: "엑센트", yrmdl: "2011", drvDstc: 249430, fuelCont: "가솔린", usbdNft: 0,
+    }, 2026);
+    expect(row).toMatchObject({
+      model_group: "엑센트", maker: "현대", year: 2011, mileage_km: 249430, region: "전북특별자치도",
+      min_bid_won: 1000000, bid_end_at: "2026-11-12 18:00:00", is_special: false,
+    });
   });
 });

@@ -2,6 +2,7 @@
 // 사용: npm run ingest -- [시작 YYYY-MM, 기본 2018-01] [끝 YYYY-MM, 기본 이번 달]
 import mysql from "mysql2/promise";
 import { toRow, type BidRow, type OnbidItem } from "../lib/onbid.ts";
+import { logged } from "../lib/runs.ts";
 
 const API = "https://apis.data.go.kr/B010003/OnbidCltrBidRsltListSrvc2/getCltrBidRsltList2";
 const ALL_PROPERTY_TYPES = "0002,0003,0004,0005,0006,0007,0008,0010,0011,0013";
@@ -48,28 +49,31 @@ const end = toArg ? new Date(`${toArg}-01T00:00:00Z`) : new Date(Date.UTC(now.ge
 const db = await mysql.createConnection(dbUrl);
 let calls = 0, saved = 0, skipped = 0;
 try {
-  for (let m = new Date(`${fromArg}-01T00:00:00Z`); m <= end; m.setUTCMonth(m.getUTCMonth() + 1)) {
-    const last = new Date(Date.UTC(m.getUTCFullYear(), m.getUTCMonth() + 1, 0));
-    const to = last < yesterday ? last : yesterday; // 개찰일은 오늘 이전만 조회된다
-    if (to < m) break;
-    let page = 1, seen = 0, total = 0;
-    do {
-      const r = await fetchPage(ymd(m), ymd(to), page++);
-      calls++;
-      total = r.total;
-      seen += r.items.length;
-      const rows = r.items.map((it) => toRow(it)).filter((x): x is BidRow => x !== null);
-      skipped += r.items.length - rows.length;
-      if (rows.length) {
-        await db.query(UPSERT, [rows.map((row) => COLS.map((c) => row[c]))]).catch((e) => {
-          throw new Error(`${ymd(m).slice(0, 6)} 저장 실패: ${e.sqlMessage ?? e.message}`); // SQL 전문은 너무 길어 메시지만
-        });
-      }
-      saved += rows.length;
-      if (r.items.length === 0) break;
-    } while (seen < total);
-    console.log(`${ymd(m).slice(0, 6)}: ${total}건`);
-  }
+  await logged(db, "bids", async () => {
+    for (let m = new Date(`${fromArg}-01T00:00:00Z`); m <= end; m.setUTCMonth(m.getUTCMonth() + 1)) {
+      const last = new Date(Date.UTC(m.getUTCFullYear(), m.getUTCMonth() + 1, 0));
+      const to = last < yesterday ? last : yesterday; // 개찰일은 오늘 이전만 조회된다
+      if (to < m) break;
+      let page = 1, seen = 0, total = 0;
+      do {
+        const r = await fetchPage(ymd(m), ymd(to), page++);
+        calls++;
+        total = r.total;
+        seen += r.items.length;
+        const rows = r.items.map((it) => toRow(it)).filter((x): x is BidRow => x !== null);
+        skipped += r.items.length - rows.length;
+        if (rows.length) {
+          await db.query(UPSERT, [rows.map((row) => COLS.map((c) => row[c]))]).catch((e) => {
+            throw new Error(`${ymd(m).slice(0, 6)} 저장 실패: ${e.sqlMessage ?? e.message}`); // SQL 전문은 너무 길어 메시지만
+          });
+        }
+        saved += rows.length;
+        if (r.items.length === 0) break;
+      } while (seen < total);
+      console.log(`${ymd(m).slice(0, 6)}: ${total}건`);
+    }
+    return { calls, rows: saved };
+  });
 } finally {
   await db.end();
 }

@@ -1,4 +1,4 @@
-import type { SearchParams } from "./search.ts";
+type SearchParams = Record<string, string | string[] | undefined>;
 
 export const MAX_COMPARE = 3;
 

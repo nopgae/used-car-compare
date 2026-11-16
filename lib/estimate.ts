@@ -7,10 +7,15 @@ export const MIN_TRAIN = 30;
 const EPOCH = Date.UTC(2018, 0, 1);
 const YEAR_MS = 365.25 * 86400_000;
 
+// 여러 대 묶음(외 3대, /5대/, 총18대, 84대 ...)·폐차 조건 매각: 한 대 가격이 아니라 학습·예측에서 뺀다.
+// 같은 문자열을 MySQL REGEXP(ICU)와 JS RegExp 양쪽에 쓴다: 백슬래시·작은따옴표를 넣지 말 것.
+const LOT = "외 ?[0-9]+ ?(대|건)|(^|[^0-9])([2-9]|[1-9][0-9]+) ?대( |/|,|[)]|$)|폐차";
+export const LOT_OR_SCRAP = new RegExp(LOT);
+
 // 학습·추정에 쓰는 낙찰 건: 일반 차, 계열·연식·주행거리 있음, 여러 대 묶음·폐차 조건 매각 제외
 export const SALES_WHERE = `status_cd = '0010' AND price_won IS NOT NULL AND NOT is_special
   AND model_group IS NOT NULL AND year IS NOT NULL AND mileage_km IS NOT NULL
-  AND name NOT REGEXP '외 ?[0-9]+ ?(대|건)|폐차'`;
+  AND name NOT REGEXP '${LOT}'`;
 
 export const yearsSinceEpoch = (d: Date) => (d.getTime() - EPOCH) / YEAR_MS;
 

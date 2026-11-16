@@ -10,7 +10,9 @@
     "ingest": "node --env-file=.env scripts/ingest.ts",
     "test": "vitest run",
     "evaluate": "node --env-file=.env scripts/evaluate.ts",
-    "ingest:stats": "node --env-file=.env scripts/ingest-stats.ts"
+    "ingest:stats": "node --env-file=.env scripts/ingest-stats.ts",
+    "snapshot": "node --env-file=.env scripts/snapshot.ts",
+    "export": "node --env-file=.env scripts/export.ts"
   },
   "dependencies": {
     "mysql2": "^3.24.6",

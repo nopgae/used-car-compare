@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  매일 09:00, 21:00에 scripts/daily.sh 실행. 그 시각에 맥이 자고 있었으면 깨어날 때 한 번 실행된다.
+  등록:  cp scripts/com.nopgae.used-car-compare.plist ~/Library/LaunchAgents/ && launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.nopgae.used-car-compare.plist
+  해제:  launchctl bootout gui/$(id -u)/com.nopgae.used-car-compare
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.nopgae.used-car-compare</string>
+  <key>ProgramArguments</key>
+  <array><string>/Users/nopgae/work/portfolio-projects/used-car-compare/scripts/daily.sh</string></array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Hour</key><integer>21</integer><key>Minute</key><integer>0</integer></dict>
+  </array>
+  <key>StandardErrorPath</key><string>/Users/nopgae/work/portfolio-projects/used-car-compare/logs/launchd.err</string>
+</dict>
+</plist>

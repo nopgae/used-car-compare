@@ -1,6 +1,7 @@
 // 한국교통안전공단 자동차 성능점검 건수(전국, 월별)를 monthly_stats에 upsert한다.
 // 사용: npm run ingest:stats -- [시작 YYYY-MM, 기본 2018-01]
 import mysql from "mysql2/promise";
+import { logged } from "../lib/runs.ts";
 
 const API = "https://apis.data.go.kr/B553881/prfomncChckInfoService_01/getprfomncChckInfoService";
 const key = process.env.DATA_GO_KR_KEY;
@@ -27,13 +28,18 @@ const [from = "2018-01"] = process.argv.slice(2);
 const now = new Date();
 const db = await mysql.createConnection(process.env.DATABASE_URL!);
 try {
-  for (let d = new Date(`${from}-01T00:00:00Z`); d <= now; d.setUTCMonth(d.getUTCMonth() + 1)) {
-    const y = d.getUTCFullYear(), m = d.getUTCMonth() + 1;
-    const ym = `${y}-${String(m).padStart(2, "0")}`;
-    const n = await count(y, m);
-    await db.query("INSERT INTO monthly_stats (metric, ym, value) VALUES ('performance_checks', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)", [ym, n]);
-    console.log(ym, n);
-  }
+  await logged(db, "stats", async () => {
+    let calls = 0;
+    for (let d = new Date(`${from}-01T00:00:00Z`); d <= now; d.setUTCMonth(d.getUTCMonth() + 1)) {
+      const y = d.getUTCFullYear(), m = d.getUTCMonth() + 1;
+      const ym = `${y}-${String(m).padStart(2, "0")}`;
+      const n = await count(y, m);
+      calls++;
+      await db.query("INSERT INTO monthly_stats (metric, ym, value) VALUES ('performance_checks', ?, ?) ON DUPLICATE KEY UPDATE value = VALUES(value)", [ym, n]);
+      console.log(ym, n);
+    }
+    return { calls, rows: calls };
+  });
 } finally {
   await db.end();
 }

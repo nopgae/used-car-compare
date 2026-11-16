@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-13T06:51:58.909Z",
+  "generatedAt": "2026-11-13T12:14:19.094Z",
   "method": "모델 계열별 log(낙찰가) ~ 차령 + log(주행거리) + 거래시점 최소제곱, 학습 30건 이상 계열만",
   "baselineMethod": "같은 모델 계열, 연식 ±2년 낙찰가 평균(기존 car-price-estimator-demo 방식)",
   "split": {
@@ -8,25 +8,25 @@
     "testTo": "2026-11-12"
   },
   "counts": {
-    "usableSales": 28024,
-    "train": 26251,
-    "test": 1773,
-    "compared": 1671,
+    "usableSales": 27614,
+    "train": 25857,
+    "test": 1757,
+    "compared": 1656,
     "modelOnly": 3,
     "baselineOnly": 90,
-    "groupsWithModel": 70
+    "groupsWithModel": 69
   },
   "model": {
-    "maeWon": 3126271,
-    "mape": 0.433,
-    "medianApe": 0.262,
-    "within20pct": 0.384,
-    "interval80Coverage": 0.791
+    "maeWon": 1686177,
+    "mape": 0.408,
+    "medianApe": 0.248,
+    "within20pct": 0.4,
+    "interval80Coverage": 0.784
   },
   "baseline": {
-    "maeWon": 4314088,
-    "mape": 0.878,
-    "medianApe": 0.481,
-    "within20pct": 0.25
+    "maeWon": 2523337,
+    "mape": 0.763,
+    "medianApe": 0.44,
+    "within20pct": 0.261
   }
 }

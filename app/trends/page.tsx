@@ -4,9 +4,6 @@ import { median } from "../../lib/compare";
 import { compact, outliers } from "../../lib/chart";
 import { LineChart } from "./LineChart";
 
-// 통계는 하루 단위로 바뀌므로 1시간마다 다시 만든다(ISR)
-export const revalidate = 3600;
-
 const fmtInt = (v: number) => Math.round(v).toLocaleString("ko-KR");
 
 export default async function TrendsPage() {

@@ -1,0 +1,23 @@
+1:"$Sreact.fragment"
+2:"/used-car-compare/_next/static/chunks/08mika-44sn50.js"
+3:I[22016,["$2"],""]
+4:I[39756,["$2"],"default"]
+5:I[37457,["$2"],"default"]
+9:"/used-car-compare/_next/static/chunks/3f5x3iidfkean.js"
+a:I[2800,["$2","$9"],"LiveView"]
+b:I[97367,["$2"],"OutletBoundary"]
+c:"$Sreact.suspense"
+e:"ViewportBoundary"
+f:I[97367,["$2"],"$e"]
+11:"MetadataBoundary"
+12:I[97367,["$2"],"$11"]
+14:I[68027,["$2"],"default",1]
+:HL["/used-car-compare/_next/static/chunks/0synmeb7jr0oe.css","style"]
+7:X
+8:[["children",{"s":"__PAGE__","h":512,"d":{"r":["$","$1","c",{"children":[[["$","h1",null,{"children":"진행 중 공매와 예상 낙찰가"}],["$","$La",null,{}]],[["$","script","script-0",{"src":"/used-car-compare/_next/static/chunks/3f5x3iidfkean.js","async":true,"nonce":"$undefined"}]],["$","$Lb",null,{"children":["$","$c",null,{"name":"Next.MetadataOutlet","children":"$@d"}]}]]}],"p":false,"v":null}}]]
+6:[["children",{"s":"live","h":512,"d":{"r":["$","$1","c",{"children":[null,["$","$L4",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":"$undefined","forbidden":"$undefined","unauthorized":"$undefined"}]]}],"p":false,"v":"$7"},"c":"$Q8"}]]
+0:{"P":null,"c":["","live",""],"q":"","i":false,"t":{"t":{"s":"","h":528,"d":{"r":["$","$1","c",{"children":[[["$","link","0",{"rel":"stylesheet","href":"/used-car-compare/_next/static/chunks/0synmeb7jr0oe.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}],["$","script","script-0",{"src":"/used-car-compare/_next/static/chunks/08mika-44sn50.js","async":true,"nonce":"$undefined"}]],["$","html",null,{"lang":"ko","children":["$","body",null,{"children":[["$","header",null,{"className":"top","children":[["$","$L3",null,{"href":"/","className":"brand","children":"공공기관 중고차 공매 시세"}],["$","nav",null,{"children":[["$","$L3",null,{"href":"/","children":"🇰🇷 한국 (온비드)"}],["$","$L3",null,{"href":"/live","children":"진행 중 공매"}],["$","$L3",null,{"href":"/estimate","children":"시세 추정"}],["$","$L3",null,{"href":"/trends","children":"거래 동향"}],["$","$L3",null,{"href":"/us","children":"🇺🇸 미국 (개발 예정)"}]]}]]}],["$","main",null,{"children":["$","$L4",null,{"parallelRouterKey":"children","error":"$undefined","errorStyles":"$undefined","errorScripts":"$undefined","template":["$","$L5",null,{}],"templateStyles":"$undefined","templateScripts":"$undefined","notFound":[[["$","title",null,{"children":"404: This page could not be found."}],["$","div",null,{"style":{"fontFamily":"system-ui,\"Segoe UI\",Roboto,Helvetica,Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\"","height":"100vh","textAlign":"center","display":"flex","flexDirection":"column","alignItems":"center","justifyContent":"center"},"children":["$","div",null,{"children":[["$","style",null,{"dangerouslySetInnerHTML":{"__html":"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}"}}],["$","h1",null,{"className":"next-error-h1","style":{"display":"inline-block","margin":"0 20px 0 0","padding":"0 23px 0 0","fontSize":24,"fontWeight":500,"verticalAlign":"top","lineHeight":"49px"},"children":404}],["$","div",null,{"style":{"display":"inline-block"},"children":["$","h2",null,{"style":{"fontSize":14,"fontWeight":400,"lineHeight":"49px","margin":0},"children":"This page could not be found."}]}]]}]}]],[]],"forbidden":"$undefined","unauthorized":"$undefined"}]}],["$","footer",null,{"children":"데이터: 한국자산관리공사 온비드 차량 공매 입찰결과, 한국교통안전공단 자동차 성능점검 통계(공공데이터포털, 이용허락범위 제한 없음). 공매 낙찰가는 관공서 퇴역차·압류차 등의 거래가로, 일반 중고차 소매 시세와 다릅니다."}]]}]}]]}],"p":false,"v":null},"c":"$Q6"},"h":{"r":["$","$1","h",{"children":[null,["$","$Lf",null,{"children":"$L10"}],["$","$L12",null,{"children":[["$","div",null,{"hidden":true,"children":["$","$c",null,{"name":"Next.Metadata","children":"$L13"}]}],null]}],null]}],"p":false,"v":null}},"m":"$undefined","G":["$14",[["$","link","0",{"rel":"stylesheet","href":"/used-car-compare/_next/static/chunks/0synmeb7jr0oe.css","precedence":"next","crossOrigin":"$undefined","nonce":"$undefined"}]]],"S":true,"r":"$undefined","s":"$undefined","a":"$undefined","l":"$undefined","p":"$undefined","d":"$undefined","b":"jstyZ--QChlHfKh_3G5sm"}
+7:C
+10:[["$","meta","0",{"charSet":"utf-8"}],["$","meta","1",{"name":"viewport","content":"width=device-width, initial-scale=1"}]]
+d:null
+13:[["$","title","0",{"children":"공공기관 중고차 공매 시세"}],["$","meta","1",{"name":"description","content":"공공기관이 온비드에 내놓은 차량 공매(불용 관용차·압류차 등)의 낙찰 결과로 보는 중고차 검색·비교·시세"}]]
